@@ -1,0 +1,5 @@
+{
+  "name": "AseguraTech Landing Page",
+  "description": "Una landing page para AseguraTech, creada con React, Vite y TailwindCSS.",
+  "requestFramePermissions": []
+}
