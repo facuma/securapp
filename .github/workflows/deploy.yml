@@ -1,5 +1,4 @@
 # .github/workflows/deploy.yml
-
 name: Deploy to GitHub Pages
 
 on:
@@ -17,8 +16,9 @@ permissions:
   id-token: write
 
 jobs:
-  # Tarea de compilación (build)
-  build:
+  # Tarea de verificación (opcional pero muy recomendada)
+  # Este paso asegura que no se construya ni se despliegue si hay errores de TypeScript.
+  check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,16 +26,38 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18 # O la versión de Node que prefieras
+          node-version: 18
           cache: 'npm'
       - name: Install dependencies
         run: npm install
-      - name: Build
+      - name: 🚨 Run Type Check & Lint (Pre-Build)
+        # Asume que tienes un script 'type-check' en package.json (ej: tsc --noEmit)
+        # y/o un script 'lint' (ej: eslint .)
+        # Puedes simplificarlo a 'npm run type-check' si solo usas TS.
+        run: npm run type-check
+
+  # Tarea de compilación (build)
+  build:
+    runs-on: ubuntu-latest
+    # Se asegura de que la verificación de tipos haya pasado antes de compilar
+    needs: check 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: 📦 Build (Usando Vite/Vite con el script 'build' limpio)
+        # IMPORTANTE: Asegúrate que 'npm run build' AHORA SOLO ejecute 'vite build'
         run: npm run build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Sube la carpeta 'dist'
+          # Sube la carpeta 'dist'. Confirma si Vite usa otra carpeta si es necesario.
           path: './dist'
 
   # Tarea de despliegue (deploy)
@@ -44,7 +66,8 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
+    # Depende de la tarea de construcción exitosa
+    needs: build 
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
