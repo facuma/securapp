@@ -16,8 +16,8 @@ permissions:
   id-token: write
 
 jobs:
-  # Tarea de verificación (opcional pero muy recomendada)
-  # Este paso asegura que no se construya ni se despliegue si hay errores de TypeScript.
+  # Tarea 1: Verificación de Tipos (Check)
+  # Asegura que no se construya si hay errores de TypeScript.
   check:
     runs-on: ubuntu-latest
     steps:
@@ -26,20 +26,19 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          # CORRECCIÓN: Se actualiza a Node.js 20.x para satisfacer las dependencias (Error EBADENGINE)
+          node-version: 20 
           cache: 'npm'
       - name: Install dependencies
         run: npm install
       - name: 🚨 Run Type Check & Lint (Pre-Build)
-        # Asume que tienes un script 'type-check' en package.json (ej: tsc --noEmit)
-        # y/o un script 'lint' (ej: eslint .)
-        # Puedes simplificarlo a 'npm run type-check' si solo usas TS.
+        # IMPORTANTE: Este paso requiere que el script 'type-check' exista en package.json (Error Missing Script)
         run: npm run type-check
 
-  # Tarea de compilación (build)
+  # Tarea 2: Compilación (Build)
   build:
     runs-on: ubuntu-latest
-    # Se asegura de que la verificación de tipos haya pasado antes de compilar
+    # Se asegura de que la verificación de tipos haya pasado
     needs: check 
     steps:
       - name: Checkout
@@ -47,20 +46,21 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          # CORRECCIÓN: Se actualiza a Node.js 20.x
+          node-version: 20
           cache: 'npm'
       - name: Install dependencies
         run: npm install
-      - name: 📦 Build (Usando Vite/Vite con el script 'build' limpio)
-        # IMPORTANTE: Asegúrate que 'npm run build' AHORA SOLO ejecute 'vite build'
+      - name: 📦 Build (Usando Vite)
+        # Asegúrate que 'npm run build' AHORA SOLO ejecute 'vite build'
         run: npm run build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Sube la carpeta 'dist'. Confirma si Vite usa otra carpeta si es necesario.
+          # Sube la carpeta 'dist'
           path: './dist'
 
-  # Tarea de despliegue (deploy)
+  # Tarea 3: Despliegue (Deploy)
   deploy:
     environment:
       name: github-pages
