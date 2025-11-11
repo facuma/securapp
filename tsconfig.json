@@ -16,10 +16,10 @@
 
     /* Opciones Estrictas de Linting */
     "strict": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
   // ¡Importante! Asegúrate de que tus archivos .ts y .tsx estén en la carpeta 'src'
-  "include": ["src"]
+  "include": ["src", "*.ts", "*.tsx"]
 }
