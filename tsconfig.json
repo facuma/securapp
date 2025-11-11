@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Opciones del Bundler (Vite) */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true, // ¡Clave! Vite/esbuild maneja la transpilación.
+    "jsx": "react-jsx", // Para la nueva sintaxis de React
+
+    /* Opciones Estrictas de Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  // ¡Importante! Asegúrate de que tus archivos .ts y .tsx estén en la carpeta 'src'
+  "include": ["src"]
+}
