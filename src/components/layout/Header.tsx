@@ -17,7 +17,7 @@ export const Header = ({ sections }: HeaderProps) => {
   const location = useLocation();
   const { scrollY } = useScroll();
 
-  useMotionValueEvent(scrollY, "change", (latest) => {
+  useMotionValueEvent(scrollY, "change", (_latest) => {
     if (location.pathname === '/') {
       for (const section of sections) {
         const element = document.getElementById(section.id);
